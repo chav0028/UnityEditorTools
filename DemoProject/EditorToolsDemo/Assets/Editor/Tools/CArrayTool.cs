@@ -19,11 +19,11 @@ public class CArrayTool : EditorWindow
     private const string M_LABEL_PLACE = "Place Objects";
     private const string M_LABEL_ERROR_OBJECT_NOT_PREFAB = "The object you wish to copy is not a prefab.";
 
-    private const string M_TOGGLE_IS_COPYING = "Is Copying Object: ";
-    private const string M_TOGGLE_COPY_AS_INSTANCE = "Copy as Instance: ";
-    private const string M_TOGGLE_RENAME_OBJECTS = "Rename Objects: ";
-    private const string M_TOGGLE_GET_ELEMENTS_FROM_PARENT = "Get Elements from Parent Object: ";
-    private const string M_TOGGLE_INCREMENTAL_ARRAY = "Is Incremental Array: ";
+    private const string M_TOGGLE_IS_COPYING = "Is Copying Object";
+    private const string M_TOGGLE_COPY_AS_INSTANCE = "Copy as Instance";
+    private const string M_TOGGLE_RENAME_OBJECTS = "Rename Objects";
+    private const string M_TOGGLE_GET_ELEMENTS_FROM_PARENT = "Get Elements from Parent Object";
+    private const string M_TOGGLE_INCREMENTAL_ARRAY = "Is Incremental Array";
 
     private const string M_VECTOR3_ARRAY_DIMENSIONS = "Array Dimensions: ";
     private const string M_VECTOR3_INCREMENTAL_DISTANCE = "Incremental Distance: ";
@@ -58,7 +58,7 @@ public class CArrayTool : EditorWindow
 
     //Array properties
     private bool m_isIncrementalArray = true;
-    private Vector3 m_arrayDimensions = new Vector3(1, 1, 1);
+    private Vector3Int m_arrayDimensions = new Vector3Int(1, 1, 1);
 
     //Incremental array properties
     private Vector3 m_incrementalDistance = Vector3.zero;
@@ -67,7 +67,7 @@ public class CArrayTool : EditorWindow
 
     //Total array properties
     private Vector3 m_totalDistance = Vector3.zero;
-    private Vector3 m_totalAngle = Vector3.zero;
+    private Vector3 m_totalAngle = Vector3.zero; //Measured in degrees
     private Vector3 m_totalScale = Vector3.zero;
 
     //Foldouts
@@ -121,7 +121,7 @@ public class CArrayTool : EditorWindow
         EditorGUILayout.Space();
 
         //Dispaly copy elements toggle
-        m_isCopyingElement = EditorGUILayout.Toggle(M_TOGGLE_IS_COPYING, m_isCopyingElement);
+        m_isCopyingElement = EditorGUILayout.ToggleLeft(M_TOGGLE_IS_COPYING, m_isCopyingElement);
 
         //Display all the array properties
         DisplayArrayProperties();
@@ -138,7 +138,8 @@ public class CArrayTool : EditorWindow
             //If there is a prefab
             if (m_objectToCopy != null)
             {
-                //If it is copying object as instance of prefab
+                //If it is copying object as instance of prefab,
+                //verify that the object being copied is a prefab
                 if (m_isCopyingAsInstance == true)
                 {
                     //If the object we want to copy is not a prefab, or its type can't be determined
@@ -155,18 +156,23 @@ public class CArrayTool : EditorWindow
                         if (GUILayout.Button(M_BUTTON_COPY))
                         {
                             //Copy the objects
-                            CopyObject();
+                            CopyObject(m_objectToCopy, m_isCopyingAsInstance,m_arrayDimensions, 
+                                m_incrementalDistance,m_incrementalAngle,m_incrementalScale, 
+                                m_renameObjects);
                         }
                     }
                 }
-                //If its not copying as instance of prefab
+                //If its not copying as instance of prefab,
+                //just copy the object, don't check if it is a prefab
                 else
                 {
                     //If the button is press
                     if (GUILayout.Button(M_BUTTON_COPY))
                     {
                         //Copy the objects
-                        CopyObject();
+                        CopyObject(m_objectToCopy, m_isCopyingAsInstance, m_arrayDimensions,
+                            m_incrementalDistance, m_incrementalAngle, m_incrementalScale,
+                            m_renameObjects);
                     }
                 }
 
@@ -188,7 +194,8 @@ public class CArrayTool : EditorWindow
                 if (GUILayout.Button(M_BUTTON_PLACE))
                 {
                     //Place, rotate, and scale the desired objects
-                    ScaleRotateTranslateObjects(ref m_listObjectsToPlace);
+                    ScaleRotateTranslateObjects(ref m_listObjectsToPlace, m_arrayDimensions,
+                        m_incrementalDistance,m_incrementalAngle, m_incrementalScale);
                 }
             }
         }
@@ -208,10 +215,10 @@ public class CArrayTool : EditorWindow
         m_objectToCopy = (GameObject)EditorGUILayout.ObjectField(M_OBJECT_TO_COPY, m_objectToCopy, typeof(GameObject), true);
 
         //Toggle if the object should be copied as an instance, keep prefab connection
-        m_isCopyingAsInstance = EditorGUILayout.Toggle(M_TOGGLE_COPY_AS_INSTANCE, m_isCopyingAsInstance);
+        m_isCopyingAsInstance = EditorGUILayout.ToggleLeft(M_TOGGLE_COPY_AS_INSTANCE, m_isCopyingAsInstance);
 
         //Toggle if we should rename the new objects created
-        m_renameObjects = EditorGUILayout.Toggle(M_TOGGLE_RENAME_OBJECTS, m_renameObjects);
+        m_renameObjects = EditorGUILayout.ToggleLeft(M_TOGGLE_RENAME_OBJECTS, m_renameObjects);
 
         //Add space in window
         EditorGUILayout.Space();
@@ -242,7 +249,7 @@ public class CArrayTool : EditorWindow
         }
 
         //Toggle if we want to get all the objects from the parent object
-        m_getElementsFromParent = EditorGUILayout.Toggle(M_TOGGLE_GET_ELEMENTS_FROM_PARENT, m_getElementsFromParent);
+        m_getElementsFromParent = EditorGUILayout.ToggleLeft(M_TOGGLE_GET_ELEMENTS_FROM_PARENT, m_getElementsFromParent);
 
         //If we want to get the elements from the parent object
         if (m_getElementsFromParent == true)
@@ -280,7 +287,8 @@ public class CArrayTool : EditorWindow
             if (m_foldoutArrayElementsToPlace == true)
             {
                 //Create an object field for each element in the array
-                m_listObjectsToPlace = Instantiate3DArray(InstantiateObjectField, m_listObjectsToPlace);
+                m_listObjectsToPlace = Instantiate3DArray(InstantiateObjectField, m_listObjectsToPlace,
+                    m_arrayDimensions, m_renameObjects);
             }
         }
 
@@ -299,10 +307,10 @@ public class CArrayTool : EditorWindow
         EditorGUILayout.Space();
 
         //Create a field to set the dimensions of the array
-        m_arrayDimensions = EditorGUILayout.Vector3Field(M_VECTOR3_ARRAY_DIMENSIONS, m_arrayDimensions);
+        m_arrayDimensions = EditorGUILayout.Vector3IntField(M_VECTOR3_ARRAY_DIMENSIONS, m_arrayDimensions);
 
         //Create togle for whether the array should use incremental or total values
-        m_isIncrementalArray = EditorGUILayout.Toggle(M_TOGGLE_INCREMENTAL_ARRAY, m_isIncrementalArray);
+        m_isIncrementalArray = EditorGUILayout.ToggleLeft(M_TOGGLE_INCREMENTAL_ARRAY, m_isIncrementalArray);
 
         //Display a fold out for the elements to place
         m_foldoutArrayProperties = EditorGUILayout.Foldout(m_foldoutArrayProperties, M_FOLDOUT_ARRAY_PROPERTIES);
@@ -337,12 +345,12 @@ public class CArrayTool : EditorWindow
         EditorGUILayout.Space();
     }
 
-    /*
-    Description: Calculate the incremental properties (distance, angle, scale) of the array 
-                 according to the total values.
-    Creator: Alvaro Chavez Mixco
-    Creation Date: Sunday, January 29, 2017
-    */
+    /// <summary>
+    /// Calculate the incremental properties (distance, angle, scale) of the array 
+    /// according to the total values.
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
     private void CalculateIncrementalProperties()
     {
         //If we are usign a total array
@@ -359,11 +367,11 @@ public class CArrayTool : EditorWindow
         }
     }
 
-    /*
-    Description: Clear the data from te previous operation
-    Creator: Alvaro Chavez Mixco
-    Creation Date: Sunday, January 29, 2017
-    */
+    /// <summary>
+    /// Clear the data from the tool's previous operation
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
     private void ClearPreviousOperationData()
     {
         m_previousParentObject = null;
@@ -372,32 +380,36 @@ public class CArrayTool : EditorWindow
         m_previousArrayDimensions = Vector3.zero;
     }
 
-    /*
-    Description: Go through all the indices in the 3D array, and using the desired instantiation function create
-                 the desired prefab. The function returns the created objects.
-    Parameters: delegInstantiateObject aInstantiationFunction - The function that will be used to instantiate the prefab.
-                GameObject aPrefab - The prefab that will be instantiated.
-    Creator: Alvaro Chavez Mixco
-    Creation Date: Sunday, January 29, 2017
-    */
-    private GameObject[,,] Instantiate3DArray(delegInstantiateObject aInstantiationFunction, GameObject aPrefab)
+    /// <summary>
+    /// Go through all the indices in the 3D array, and using the desired instantiation function create
+    /// the desired prefab.The function returns the created objects.
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <param name="aInstantiationFunction" type="delegInstantiateObject">The function that will be used to instantiate the prefab</param>
+    /// <param name="aPrefab" type="GameObject">The prefab that will be instantiated</param>
+    /// <param name="aArrayDimensions" type="Vector3Int">The dimensions of the array in the x, y, and z axis</param>
+    /// <param name="aShouldRenameObjects" type="bools">Indicates if the objects in the array should be renamed</param>
+    /// <returns type="GameObject[,,]">A 3D array of all the objects that were instantiated</returns>
+    private GameObject[,,] Instantiate3DArray(delegInstantiateObject aInstantiationFunction, GameObject aPrefab,
+        Vector3Int aArrayDimensions, bool aShouldRenameObjects)
     {
         //Create an array with the desired dimensions
-        GameObject[,,] createdObjects = new GameObject[(int)m_arrayDimensions.x, (int)m_arrayDimensions.y, (int)m_arrayDimensions.z];
+        GameObject[,,] createdObjects = new GameObject[aArrayDimensions.x, aArrayDimensions.y, aArrayDimensions.z];
 
         //If the instantiation function is valid
         if (aInstantiationFunction != null)
         {
-            string indexName = string.Empty;
+            string indexName;
 
             //Go through all the X rows in the array
-            for (int rowX = 0; rowX < (int)m_arrayDimensions.x; rowX++)
+            for (int rowX = 0; rowX < aArrayDimensions.x; rowX++)
             {
                 //Go through all the Y rows in the array
-                for (int rowY = 0; rowY < (int)m_arrayDimensions.y; rowY++)
+                for (int rowY = 0; rowY < aArrayDimensions.y; rowY++)
                 {
                     //Go through all the Z rows in the array
-                    for (int rowZ = 0; rowZ < (int)m_arrayDimensions.z; rowZ++)
+                    for (int rowZ = 0; rowZ < aArrayDimensions.z; rowZ++)
                     {
                         //Save the current index as a string
                         indexName = " " + rowX + ", " + rowY + ", " + rowZ;
@@ -406,7 +418,7 @@ public class CArrayTool : EditorWindow
                         createdObjects[rowX, rowY, rowZ] = aInstantiationFunction(aPrefab, indexName);
 
                         //If the object at current idnex is valid and we want to rename the object
-                        if (createdObjects[rowX, rowY, rowZ] != null && m_renameObjects == true)
+                        if (createdObjects[rowX, rowY, rowZ] != null && aShouldRenameObjects == true)
                         {
                             //Change the name of the object according to the index
                             createdObjects[rowX, rowY, rowZ].name = createdObjects[rowX, rowY, rowZ].name + indexName;
@@ -421,20 +433,24 @@ public class CArrayTool : EditorWindow
         return createdObjects;
     }
 
-    /*
-    Description: Go through all the indices in the 3D array, and using the desired instantiation function create
-                 the desired prefab for that specific coordinate.  The function returns the created objects.
-    Parameters: delegInstantiateObject aInstantiationFunction - The function that will be used to instantiate the prefab.
-                GameObject[,,] aArrayOfObjects) - The array of prefabs/objects that will be used when sampling which objects to
-                                                  create in the 3D array.
-    Creator: Alvaro Chavez Mixco
-    Creation Date: Thursday, February 16th, 2017
-    */
-    private GameObject[,,] Instantiate3DArray(delegInstantiateObject aInstantiationFunction, GameObject[,,] aArrayOfObjects)
+    /// <summary>
+    /// Go through all the indices in the 3D array, and using the desired instantiation function create
+    /// the desired prefab for that specific coordinate.The function returns the created objects.
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <param name="aInstantiationFunction" type="delegInstantiateObject">The function that will be used to instantiate the prefab</param>
+    /// <param name="aArrayOfObjects" type="GameObject[,,]">The array of prefabs/objects that will be used when sampling which objects to
+    /// create in the 3D array</param>
+    /// <param name="aArrayDimensions" type="Vector3Int">The dimensions of the array in the x, y, and z axis</param>
+    /// <param name="aShouldRenameObjects" type="bools">Indicates if the objects in the array should be renamed</param>
+    /// <returns type="GameObject[,,]">A 3D array of all the objects that were instantiated</returns>
+    private GameObject[,,] Instantiate3DArray(delegInstantiateObject aInstantiationFunction, GameObject[,,] aArrayOfObjects,
+        Vector3Int aArrayDimensions, bool aShouldRenameObjects)
     {
         //Create an array with the desired dimensions
-        GameObject[,,] createdObjects = new GameObject[(int)m_arrayDimensions.x, (int)m_arrayDimensions.y, (int)m_arrayDimensions.z];
-                  
+        GameObject[,,] createdObjects = new GameObject[aArrayDimensions.x, aArrayDimensions.y, aArrayDimensions.z];
+
         //If the array of objects being passed is null
         if (aArrayOfObjects == null)
         {
@@ -456,16 +472,16 @@ public class CArrayTool : EditorWindow
             return aArrayOfObjects;
         }
 
-        string indexName = string.Empty;
+        string indexName;
 
         //Go through all the X rows in the array
-        for (int rowX = 0; rowX < (int)m_arrayDimensions.x; rowX++)
+        for (int rowX = 0; rowX < aArrayDimensions.x; rowX++)
         {
             //Go through all the Y rows in the array
-            for (int rowY = 0; rowY < (int)m_arrayDimensions.y; rowY++)
+            for (int rowY = 0; rowY < aArrayDimensions.y; rowY++)
             {
                 //Go through all the Z rows in the array
-                for (int rowZ = 0; rowZ < (int)m_arrayDimensions.z; rowZ++)
+                for (int rowZ = 0; rowZ < aArrayDimensions.z; rowZ++)
                 {
                     //Save the current index as a string
                     indexName = " " + rowX + ", " + rowY + ", " + rowZ;
@@ -474,7 +490,7 @@ public class CArrayTool : EditorWindow
                     createdObjects[rowX, rowY, rowZ] = aInstantiationFunction(aArrayOfObjects[rowX, rowY, rowZ], indexName);
 
                     //If the object at current index is valid and we want to rename the object
-                    if (createdObjects[rowX, rowY, rowZ] != null && m_renameObjects == true)
+                    if (createdObjects[rowX, rowY, rowZ] != null && aShouldRenameObjects == true)
                     {
                         //Change the name of the object according to the index
                         createdObjects[rowX, rowY, rowZ].name = createdObjects[rowX, rowY, rowZ].name + indexName;
@@ -488,13 +504,14 @@ public class CArrayTool : EditorWindow
         return createdObjects;
     }
 
-    /*
-    Description: Instantiate a gameobject from a prefab, but conserving the connection to the prefab
-    Parameters: GameObject aPrefab - The gameobject prefab that will be created.
-                string aText - Not used in this function
-    Creator: Alvaro Chavez Mixco
-    Creation Date: Sunday, January 29, 2017
-    */
+    /// <summary>
+    /// Instantiate a gameobject from a prefab, but conserving the connection to the prefab
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <param name="aPrefab" type="GameObject">The gameobject prefab that will be created</param>
+    /// <param name="aText" type="string">T Not used in this function</param>
+    /// <returns type="GameObject">The created object, with the connection to the prefab</returns>
     private GameObject InstantiantePrefab(GameObject aPrefab, string aText)
     {
         //If the prefab is valid
@@ -512,20 +529,21 @@ public class CArrayTool : EditorWindow
         return null;
     }
 
-    /*
-    Description: Instantiate a gameobject from a prefab, as a clone, no connection to prefab kept.
-    Parameters: GameObject aPrefab - The gameobject prefab that will be created.
-                string aText - Not used in this function
-    Creator: Alvaro Chavez Mixco
-    Creation Date: Sunday, January 29, 2017
-    */
+    /// <summary>
+    /// Instantiate a gameobject from a prefab, as a clone, no connection to prefab kept.
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <param name="aPrefab" type="GameObject">The gameobject prefab that will be created</param>
+    /// <param name="aText" type="string">T Not used in this function</param>
+    /// <returns type="GameObject">The object created normally, with no connection to prefab</returns>
     private GameObject InstantianteClone(GameObject aPrefab, string aText)
     {
         //If the prefab being passed is valid
         if (aPrefab != null)
         {
             //Create a clone
-            GameObject clone = (GameObject)Instantiate(m_objectToCopy);
+            GameObject clone = (GameObject)Instantiate(aPrefab);
 
             //delete "(clone)" on the name because it's annoying
             clone.name = aPrefab.name.Replace("(Clone)", "");
@@ -537,13 +555,14 @@ public class CArrayTool : EditorWindow
         return null;
     }
 
-    /*
-    Description: Instantiate an object field in the game object window
-    Parameters: GameObject aPrefab - The gameobject prefab that will be created.
-                string aText - The 3D coords of the object
-    Creator: Alvaro Chavez Mixco
-    Creation Date: Sunday, January 29, 2017
-    */
+    /// <summary>
+    /// Instantiate an object field in the game object window
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <param name="aGameObject" type="GameObject">The gameobject that will be set in the object field</param>
+    /// <param name="aText" type="string">The 3D coords of the object</param>
+    /// <returns type="GameObject">The object created normally, with no connection to prefab</returns>
     private GameObject InstantiateObjectField(GameObject aGameObject, string aText)
     {
         //If the text is valid
@@ -557,34 +576,56 @@ public class CArrayTool : EditorWindow
         return (GameObject)EditorGUILayout.ObjectField(M_OBJECT_BASE_OBJECT_TO_PLACE + aText, aGameObject, typeof(GameObject), true);
     }
 
-    /*
-    Description: Create a 3D array copies of the object
-    Creator: Alvaro Chavez Mixco
-    Creation Date: Sunday, January 29, 2017
-    */
-    private void CopyObject()
+    /// <summary>
+    /// Copy the object selected in the tool on a 3D array of objects
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <param name="aObjectToCopy" type="GameObject">The gameobject that will be copied</param>
+    /// <param name="aCopyAsInstance" type="bool">Indicated whethere the object should be instantiated
+    /// as a prefab, or a normal object</param>  
+    /// <param name="aArrayDimensions" type="Vector3Int">The dimensions of the array in the x, y, and z axis</param>
+    /// <param name="aIncrementalDistance" type="Vector3">The increment in distance x,y, z that each
+    /// elemnet of the array will have in comparison with each other</param>
+    /// <param name="aIncrementalAngle" type="Vector3">The increment in angle (degrees) x,y, z that each
+    /// elemnet of the array will have in comparison with each other</param>
+    /// <param name="aIncrementalScale" type="Vector3">The increment in scale x,y, z that each
+    /// elemnet of the array will have in comparison with each other</param>
+    /// <param name="aShouldRenameObjects" type="bools">Indicates if the objects in the array should be renamed</param>
+    private void CopyObject(GameObject aObjectToCopy, bool aCopyAsInstance, Vector3Int aArrayDimensions,
+        Vector3 aIncrementalDistance, Vector3 aIncrementalAngle, Vector3 aIncrementalScale, bool aShouldRenameObjects)
     {
         //if user want to keep the connection to the prefab
-        if (m_isCopyingAsInstance == true)
+        if (aCopyAsInstance == true)
         {
             //Spawn objects using the instantiate prefab function
-            SpawnObjects(InstantiantePrefab, m_objectToCopy);
+            SpawnObjects(InstantiantePrefab, aObjectToCopy, aArrayDimensions, 
+                aIncrementalDistance,aIncrementalAngle, aIncrementalScale, aShouldRenameObjects);
         }
         else //if user don't want to keep the connection to the prefab
         {
             //Spawn objects using the instantiate clone function
-            SpawnObjects(InstantianteClone, m_objectToCopy);
+            SpawnObjects(InstantianteClone, aObjectToCopy, aArrayDimensions,
+                aIncrementalDistance, aIncrementalAngle, aIncrementalScale, aShouldRenameObjects);
         }
     }
 
-    /*
-    Description: Scale, Rotate, and Translate the objects in the list according to their index coordinates
-                in the 3D array.
-    Parameters: ref GameObject[,,] aListOfGameObjects - The list of gameobjects that will be scaled.
-    Creator: Alvaro Chavez Mixco
-    Creation Date: Sunday, January 29, 2017
-    */
-    private void ScaleRotateTranslateObjects(ref GameObject[,,] aListOfGameObjects)
+    /// <summary>
+    /// Scale, Rotate, and Translate the objects in the list according to their index coordinates
+    /// in the 3D array.
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <param name="aListOfGameObjects" type="ref GameObject[,,]">The list of gameobjects that will be transformed</param>
+    /// <param name="aArrayDimensions" type="Vector3Int">The dimensions of the array in the x, y, and z axis</param>
+    /// <param name="aIncrementalDistance" type="Vector3">The increment in distance x,y, z that each
+    /// elemnet of the array will have in comparison with each other</param>
+    /// <param name="aIncrementalAngle" type="Vector3">The increment in angle (degrees) x,y, z that each
+    /// elemnet of the array will have in comparison with each other</param>
+    /// <param name="aIncrementalScale" type="Vector3">The increment in scale x,y, z that each
+    /// elemnet of the array will have in comparison with each other</param>
+    private void ScaleRotateTranslateObjects(ref GameObject[,,] aListOfGameObjects, Vector3Int aArrayDimensions,
+        Vector3 aIncrementalDistance, Vector3 aIncrementalAngle, Vector3 aIncrementalScale)
     {
         //If the array of object is valid
         if (aListOfGameObjects != null)
@@ -596,7 +637,7 @@ public class CArrayTool : EditorWindow
                 Vector3 startingRotation = Vector3.zero;
                 Vector3 startingPosition = Vector3.zero;
 
-                Vector3 newRotation = Vector3.zero;
+                Vector3 newRotation;
 
                 //If the first element in the array is valid
                 if (aListOfGameObjects[0, 0, 0] != null)
@@ -613,31 +654,31 @@ public class CArrayTool : EditorWindow
 
 
                 //Go through all the X rows in the array
-                for (int rowX = 0; rowX < (int)m_arrayDimensions.x; rowX++)
+                for (int rowX = 0; rowX < aArrayDimensions.x; rowX++)
                 {
                     //Go through all the Y rows in the array
-                    for (int rowY = 0; rowY < (int)m_arrayDimensions.y; rowY++)
+                    for (int rowY = 0; rowY < aArrayDimensions.y; rowY++)
                     {
                         //Go through all the Z rows in the array
-                        for (int rowZ = 0; rowZ < (int)m_arrayDimensions.z; rowZ++)
+                        for (int rowZ = 0; rowZ < aArrayDimensions.z; rowZ++)
                         {
                             //If the object is valid
                             if (aListOfGameObjects[rowX, rowY, rowZ] != null)
                             {
                                 //Scale the object, local scale
                                 aListOfGameObjects[rowX, rowY, rowZ].transform.localScale = startingScale +
-                                    new Vector3(m_incrementalScale.x * rowX, m_incrementalScale.y * rowY, m_incrementalScale.y * rowZ);
+                                    new Vector3(aIncrementalScale.x * rowX, aIncrementalScale.y * rowY, aIncrementalScale.y * rowZ);
 
                                 //Calculate the rotation of each object
                                 newRotation = startingRotation +
-                                    new Vector3(m_incrementalAngle.x * rowX, m_incrementalAngle.y * rowY, m_incrementalAngle.z * rowZ);
+                                    new Vector3(aIncrementalAngle.x * rowX, aIncrementalAngle.y * rowY, aIncrementalAngle.z * rowZ);
 
                                 //Set the rotation of each object
                                 aListOfGameObjects[rowX, rowY, rowZ].transform.localEulerAngles = newRotation;
 
                                 //Place the object at the desired position
                                 aListOfGameObjects[rowX, rowY, rowZ].transform.localPosition = startingPosition +
-                                    new Vector3(m_incrementalDistance.x * rowX, m_incrementalDistance.y * rowY, m_incrementalDistance.z * rowZ);
+                                    new Vector3(aIncrementalDistance.x * rowX, aIncrementalDistance.y * rowY, aIncrementalDistance.z * rowZ);
                             }
                         }
                     }
@@ -649,20 +690,33 @@ public class CArrayTool : EditorWindow
         ClearPreviousOperationData();
     }
 
-    /*
-    Description: Instantiate a 3D array of objects, and then place, rotate and scale them.
-    Parameters: delegInstantiateObject aInstantiationFunction - The function used to instantiate the object
-                GameObject aPrefab - The object prefab that will be created.
-    Creator: Alvaro Chavez Mixco
-    Creation Date: Sunday, January 29, 2017
-    */
-    private void SpawnObjects(delegInstantiateObject aInstantiationFunction, GameObject aPrefab)
+    /// <summary>
+    /// Instantiate a 3D array of objects, and then place, rotate and scale them.
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <param name="aInstantiationFunction" type="delegInstantiateObject">The function used to instantiate the object</param>
+    /// <param name="aPrefab" type="GameObject">The object prefab that will be created</param>
+    /// <param name="aArrayDimensions" type="Vector3Int">The dimensions of the array in the x, y, and z axis</param>
+    /// <param name="aIncrementalDistance" type="Vector3">The increment in distance x,y, z that each
+    /// elemnet of the array will have in comparison with each other</param>
+    /// <param name="aIncrementalAngle" type="Vector3">The increment in angle (degrees) x,y, z that each
+    /// elemnet of the array will have in comparison with each other</param>
+    /// <param name="aIncrementalScale" type="Vector3">The increment in scale x,y, z that each
+    /// elemnet of the array will have in comparison with each other</param>
+    /// <param name="aShouldRenameObjects" type="bools">Indicates if the objects in the array should be renamed</param>
+    private void SpawnObjects(delegInstantiateObject aInstantiationFunction, GameObject aPrefab,
+        Vector3Int aArrayDimensions,
+        Vector3 aIncrementalDistance, Vector3 aIncrementalAngle, Vector3 aIncrementalScale,
+        bool aShouldRenameObjects)
     {
         //Create the objects with the desired instantiation function, using the desired prefab
-        GameObject[,,] createdObjects = Instantiate3DArray(aInstantiationFunction, aPrefab);
+        GameObject[,,] createdObjects = Instantiate3DArray(aInstantiationFunction, aPrefab,
+            aArrayDimensions, aShouldRenameObjects);
 
         //Place, rotate, and scale the objects
-        ScaleRotateTranslateObjects(ref createdObjects);
+        ScaleRotateTranslateObjects(ref createdObjects, aArrayDimensions,
+            aIncrementalDistance, aIncrementalAngle, aIncrementalScale);
 
         //Clear the data from the previous operation
         ClearPreviousOperationData();
