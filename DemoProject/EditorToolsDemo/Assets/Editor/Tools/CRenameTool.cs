@@ -67,7 +67,7 @@ public class CRenameTool : EditorWindow
     Creator: Alvaro Chavez Mixco
     Creation Date: Sunday, January 29, 2017
     */
-    [MenuItem("Custom Tools/Rename Tool")]
+    [MenuItem("Custom Tools/Rename")]
     private static void Init()
     {
         CRenameTool window = (CRenameTool)EditorWindow.GetWindow(typeof(CRenameTool));//Create window

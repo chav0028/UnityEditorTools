@@ -34,7 +34,7 @@ public class CTransformSelectionTool : EditorWindow
     Creator: Alvaro Chavez Mixco
     Creation Date: Sunday, January 29, 2017
     */
-    [MenuItem("Custom Tools/Transform Selection Tool")]
+    [MenuItem("Custom Tools/Transform Selection")]
     private static void Init()
     {
         CTransformSelectionTool window = (CTransformSelectionTool)EditorWindow.GetWindow(typeof(CTransformSelectionTool));//Create window
