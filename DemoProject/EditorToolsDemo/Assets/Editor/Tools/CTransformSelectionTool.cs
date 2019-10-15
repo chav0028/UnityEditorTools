@@ -1,10 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
-
-using UnityEditor;
-
-//If it running in the unity editor
+﻿//If it running in the unity editor
 #if UNITY_EDITOR
+using UnityEditor;
+using UnityEngine;
+
 /*
 Description: Tool to modify the transform of all the objects selected by an specific amount
 Creator: Alvaro Chavez Mixco

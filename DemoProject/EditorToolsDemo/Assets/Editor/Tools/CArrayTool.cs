@@ -1,18 +1,14 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿//If the program is in the Unity editor
+#if UNITY_EDITOR
+using UnityEngine;
 
 using UnityEditor;
-using System.Collections.Generic;
-
-//If the program is in the Unity editor
-#if UNITY_EDITOR
 
 /// <summary>
 /// Unity Editor Tool to place objects in a 3D array. This works similar to 3DS Max array tool.
 /// </summary>
 /// <Creator>Alvaro Chavez Mixco</Creator>
 /// <CreationDate>Sunday, January 29, 2017</CreationDate>
-
 public class CArrayTool : EditorWindow
 {
     private const string M_LABEL_COPY = "Copy Objects";
@@ -79,6 +75,12 @@ public class CArrayTool : EditorWindow
     private GameObject m_parentObject = null;
     private GameObject[,,] m_listObjectsToPlace = null;
 
+    /// <summary>
+    /// Delegate for function used to instantiate an object
+    /// </summary>
+    /// <param name="aObjectPrefab" type="GameObject">The object that will be instantiated</param>
+    /// <param name="aText" type="string">Text commonly used for defining the name of the created object</param>
+    /// <returns type="GameObject">The object that was just created</returns>
     private delegate GameObject delegInstantiateObject(GameObject aObjectPrefab, string aText);
 
     /// <summary>

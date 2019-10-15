@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿//If the program is in the Unity editor
+#if UNITY_EDITOR
 using UnityEngine;
 
 public class CUtilEditorTools
@@ -277,3 +277,4 @@ Creation Date:  Tuesday, March 20th, 2017
         return SortByAlphanumerically(aObjectB, aObjectA);
     }
 }
+#endif

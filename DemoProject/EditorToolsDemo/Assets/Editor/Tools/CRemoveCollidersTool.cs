@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿//If the program is in the Unity editor
+#if UNITY_EDITOR
+using UnityEngine;
 
 using UnityEditor;
-using UnityEditorInternal;
 
 /// <summary>
 /// Tool to remove all the type of colliders (capsule, sphere, etc.) from gameobjects
@@ -12,12 +13,12 @@ public class CRemoveCollidersTool : EditorWindow
 {
     private const string M_LABEL_WARNING_SELECT_OBJECTS = "Please select object to remove colliders from";
 
-    private const string M_TOGGLE_REMOVE_RECURSIVELY = "Remove recursively";
-    private const string M_TOGGLE_REMOVE_COLLIDERS = "Remove colliders";
-    private const string M_TOGGLE_REMOVE_TRIGGERS = "Remove triggers";
-    private const string M_TOGGLE_REMOVE_IN_INACTIVE_OBJECT = "Remove in inactive objects";
+    private const string M_TOGGLE_REMOVE_RECURSIVELY = "Remove Recursively";
+    private const string M_TOGGLE_REMOVE_COLLIDERS = "Remove Colliders";
+    private const string M_TOGGLE_REMOVE_TRIGGERS = "Remove Triggers";
+    private const string M_TOGGLE_REMOVE_IN_INACTIVE_OBJECT = "Remove in Inactive Objects";
 
-    private const string M_BUTTON_REMOVE = "Remove colliders";
+    private const string M_BUTTON_REMOVE = "Remove Colliders";
 
     private bool m_removeRecursively = true;
     private bool m_removeColliders = true;
@@ -146,3 +147,4 @@ public class CRemoveCollidersTool : EditorWindow
         }
     }
 }
+#endif
