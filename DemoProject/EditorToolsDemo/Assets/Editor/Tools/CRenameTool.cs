@@ -76,7 +76,7 @@ public class CRenameTool : EditorWindow
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
     /// <CreationDate>Sunday, January 29, 2017</CreationDate>
-    [MenuItem("Custom Tools/Rename")]
+    [MenuItem("Tools/Rename")]
     private static void Init()
     {
         //Create the editor window

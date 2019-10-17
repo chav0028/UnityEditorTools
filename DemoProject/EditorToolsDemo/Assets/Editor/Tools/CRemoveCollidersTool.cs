@@ -30,7 +30,7 @@ public class CRemoveCollidersTool : EditorWindow
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
     /// <CreationDate>Friday, October 11th, 2019</CreationDate>
-    [MenuItem("Custom Tools/Remove Colliders")]
+    [MenuItem("Tools/Remove Colliders")]
     private static void Init()
     {
         //Create editor window

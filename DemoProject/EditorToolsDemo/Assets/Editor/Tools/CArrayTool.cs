@@ -88,7 +88,7 @@ public class CArrayTool : EditorWindow
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
     /// <CreationDate>Sunday, January 29, 2017</CreationDate>
-    [MenuItem("Custom Tools/Array")]
+    [MenuItem("Tools/Array")]
     private static void Init()
     {
         //Create an editor window

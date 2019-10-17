@@ -56,7 +56,7 @@ public class CRenderCubemapTool : EditorWindow
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
     /// <CreationDate>Tuesday, October 15th, 2019</CreationDate>
-    [MenuItem("Custom Tools/Render Cubemap")]
+    [MenuItem("Tools/Render Cubemap")]
     private static void Init()
     {
         //Create the editor window
