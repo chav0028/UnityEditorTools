@@ -71,7 +71,7 @@ public class CRenderCubemapTool : EditorWindow
     /// handles the interaction/functionality of the UI shown
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Tuesday, October 15th, 2019</CreationDate>
     private void OnGUI()
     {
         //Display the field object where the user can specify from which position (transform) the
@@ -139,13 +139,18 @@ public class CRenderCubemapTool : EditorWindow
                 {
                     //Render into the legacy cubemap
                     RenderLegacyCubemap(ref m_legacyCubemap, m_renderingPosition,
-                        m_cameraClearFlags,m_cameraBackgroundColor,m_cameraCullingMask,
-                        m_cameraNearClippingPlane,m_cameraFarClippingPlane,m_cameraAllowHDR);
+                        m_cameraClearFlags, m_cameraBackgroundColor, m_cameraCullingMask,
+                        m_cameraNearClippingPlane, m_cameraFarClippingPlane, m_cameraAllowHDR);
                 }
             }
         }
     }
 
+    /// <summary>
+    /// Show the UI for configuring the advacned camera (used for rendering the cubemap) settings
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Tuesday, October 15th, 2019</CreationDate>
     private void ShowAdvancedCameraSettings()
     {
         //Display an enum field for the camera clear flags
@@ -153,9 +158,12 @@ public class CRenderCubemapTool : EditorWindow
             (CameraClearFlags)EditorGUILayout.EnumPopup(M_ENUM_FIELD_CAMERA_CLEAR_FLAGS, m_cameraClearFlags);
 
         //If the camera clear flags are set to skybox or solid color
-        if (m_cameraClearFlags == CameraClearFlags.Skybox || m_cameraClearFlags == CameraClearFlags.SolidColor)
+        if (m_cameraClearFlags == CameraClearFlags.SolidColor ||
+            (m_cameraClearFlags == CameraClearFlags.Skybox && RenderSettings.skybox == null))
         {
             //Display the background color field
+            //Only used if clearFlags are set to CameraClearFlags.SolidColor
+            //(or CameraClearFlags.Skybox but the skybox is not set up).
             m_cameraBackgroundColor =
                 EditorGUILayout.ColorField(M_COLOR_FIELD_CAMERA_BACKGROUND_COLOR, m_cameraBackgroundColor);
         }
@@ -192,6 +200,21 @@ public class CRenderCubemapTool : EditorWindow
         m_cameraAllowHDR = EditorGUILayout.Toggle(M_TOGGLE_CAMERA_ALLOW_HDR, m_cameraAllowHDR);
     }
 
+    /// <summary>
+    /// Setup the camera that will be used for rendering the cubemap
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Tuesday, October 15th, 2019</CreationDate>
+    /// <param name="aCameraToSet" type="ref Camera"></param>
+    /// <param name="aCameraClearFlags" type="CameraClearFlags">How the camera clears the background</param>
+    /// <param name="aCameraBackgroundColor" type="Color">The color with which the screen will be cleared.
+    /// Only used if clearFlags are set to CameraClearFlags.SolidColor (or CameraClearFlags.Skybox
+    /// but the skybox is not set up).</param>
+    /// <param name="aCameraCullingMask" type="LayerMask">This is used to render parts of the Scene selectively</param>
+    /// <param name="aDistanceNearClippingPlane" type="float">The near clipping plane distance</param>
+    /// <param name="aDistanceFarClippingPlane" type="float">The far clipping plane distance</param>
+    /// <param name="aCameraAllowHDR" type="bool">Indicates if High dynamic range (HDR) rendering
+    /// should be enabled</param>
     private void SetRenderingCamera(ref Camera aCameraToSet, CameraClearFlags aCameraClearFlags,
         Color aCameraBackgroundColor, LayerMask aCameraCullingMask, float aDistanceNearClippingPlane,
         float aDistanceFarClippingPlane, bool aCameraAllowHDR)
@@ -209,13 +232,24 @@ public class CRenderCubemapTool : EditorWindow
         aCameraToSet.allowHDR = aCameraAllowHDR;
     }
 
-    /*
-    Description: Create a camera at the specified location, configure its setttings,
-                 and render a cubemap into the specified cubemap asset
-    Creator: Alvaro Chavez Mixco
-    Creation Date: Tuesday, October 24th, 2017
-    */
-    private void RenderLegacyCubemap(ref Cubemap aCubemap, Transform aRenderingPosition, 
+    /// <summary>
+    /// Renders the cubemap, using the camera properties being passed, to
+    /// <paramref name="aCubemap"/> Legacy cubemap asset
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Tuesday, October 15th, 2019</CreationDate>
+    /// <param name="aCubemap" type="ref Cubemap">The legacy cubemap asset where the camera
+    /// images will be rendered. This must be marked as Readable.</param>
+    /// <param name="aCameraClearFlags" type="CameraClearFlags">How the camera clears the background</param>
+    /// <param name="aCameraBackgroundColor" type="Color">The color with which the screen will be cleared.
+    /// Only used if clearFlags are set to CameraClearFlags.SolidColor (or CameraClearFlags.Skybox
+    /// but the skybox is not set up).</param>
+    /// <param name="aCameraCullingMask" type="LayerMask">This is used to render parts of the Scene selectively</param>
+    /// <param name="aDistanceNearClippingPlane" type="float">The near clipping plane distance</param>
+    /// <param name="aDistanceFarClippingPlane" type="float">The far clipping plane distance</param>
+    /// <param name="aCameraAllowHDR" type="bool">Indicates if High dynamic range (HDR) rendering
+    /// should be enabled</param>
+    private void RenderLegacyCubemap(ref Cubemap aCubemap, Transform aRenderingPosition,
         CameraClearFlags aCameraClearFlags, Color aCameraBackgroundColor,
         LayerMask aCameraCullingMask, float aDistanceNearClippingPlane,
         float aDistanceFarClippingPlane, bool aCameraAllowHDR)
@@ -241,6 +275,23 @@ public class CRenderCubemapTool : EditorWindow
         DestroyImmediate(cubemapObject);
     }
 
+    /// <summary>
+    /// Renders the cubemap, using the camera properties being passed, to
+    /// <paramref name="aCubemap"/> a Render Texture Cube
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Tuesday, October 15th, 2019</CreationDate>
+    /// <param name="aCubemap" type="ref RenderTexture">The Render Texture where the
+    /// camera images will be rendered to. This must have the Cube Dimension.</param>
+    /// <param name="aCameraClearFlags" type="CameraClearFlags">How the camera clears the background</param>
+    /// <param name="aCameraBackgroundColor" type="Color">The color with which the screen will be cleared.
+    /// Only used if clearFlags are set to CameraClearFlags.SolidColor (or CameraClearFlags.Skybox
+    /// but the skybox is not set up).</param>
+    /// <param name="aCameraCullingMask" type="LayerMask">This is used to render parts of the Scene selectively</param>
+    /// <param name="aDistanceNearClippingPlane" type="float">The near clipping plane distance</param>
+    /// <param name="aDistanceFarClippingPlane" type="float">The far clipping plane distance</param>
+    /// <param name="aCameraAllowHDR" type="bool">Indicates if High dynamic range (HDR) rendering
+    /// should be enabled</param>
     private void RenderRenderTextureCubemap(ref RenderTexture aCubemap, Transform aRenderingPosition,
     CameraClearFlags aCameraClearFlags, Color aCameraBackgroundColor,
     LayerMask aCameraCullingMask, float aDistanceNearClippingPlane,

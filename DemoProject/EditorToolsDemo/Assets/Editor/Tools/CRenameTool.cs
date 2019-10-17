@@ -35,9 +35,6 @@ public class CRenameTool : EditorWindow
 
     private const string M_BUTTON_RENAME = "Rename Objects";
 
-    //The final combination of prefix + base + suffix
-    private string m_finalName = string.Empty;
-
     //Strings that make the name
     private string m_baseName = string.Empty;
     private string m_prefix = string.Empty;

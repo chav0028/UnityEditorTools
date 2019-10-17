@@ -122,7 +122,6 @@ public class CRemoveCollidersTool : EditorWindow
     /// <param name="aColliders">The colliders that will be removed from the game object</param>
     /// <param name="aRemoveCollider">Indicates if colliders (non-triggers) should be removed</param>
     /// <param name="aRemoveTrigger">Inidcates if triggers (colliders set as trigger) should be removed</param>
-    /// 
     private void RemoveColliders(Collider[] aColliders, bool aRemoveCollider, bool aRemoveTrigger)
     {
         //If the colliders are valid
