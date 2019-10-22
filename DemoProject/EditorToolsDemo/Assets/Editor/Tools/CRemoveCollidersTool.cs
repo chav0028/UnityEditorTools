@@ -11,6 +11,7 @@ using UnityEditor;
 /// <CreationDate>Friday, October 11th, 2019</CreationDate>
 public class CRemoveCollidersTool : EditorWindow
 {
+    //Constants
     private const string M_LABEL_WARNING_SELECT_OBJECTS = "Please select object to remove colliders from";
 
     private const string M_TOGGLE_REMOVE_RECURSIVELY = "Remove Recursively";
@@ -20,6 +21,7 @@ public class CRemoveCollidersTool : EditorWindow
 
     private const string M_BUTTON_REMOVE = "Remove Colliders";
 
+    //Settings
     private bool m_removeRecursively = true;
     private bool m_removeColliders = true;
     private bool m_removeTriggers = true;
