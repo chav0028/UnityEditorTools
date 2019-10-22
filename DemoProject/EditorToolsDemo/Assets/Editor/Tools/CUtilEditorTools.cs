@@ -2,25 +2,33 @@
 #if UNITY_EDITOR
 using UnityEngine;
 
+/// <summary>
+/// A series of functions commonly used in the editor tools
+/// </summary>
+/// <Creator>Alvaro Chavez Mixco</Creator>
+/// <CreationDate>Sunday, January 29th, 2017</CreationDate>
 public class CUtilEditorTools
 {
-    /*
-Description: Function to read a string and get numeric or char (not numeric characters) from a string.
-             The function will return the values read.
-Parameters: string aValueToRead - The string of the value that will be reaed
-            ref int aStartingIndex - The index from which it will start reading the string, this will be updated after
-                                     the function executes
-            int aStringToReadLength - The length (number of characters) of the string that will be read
-Creator: Alvaro Chavez Mixco
-Creation Date:  Wednesday, February 15th, 2017
-Extra Notes: Based on: https://www.dotnetperls.com/alphanumeric-sorting
-             This function is inteded to work with the function SortByAlphanumerically, so it misses a lot
-             of "if" checks.
-*/
+    /// <summary>
+    /// Function to read a string and get the first (if any) number chunk from it (series
+    /// of continous number characters)
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Wednesday, February 15th, 2017</CreationDate>
+    /// <param name="aStringToRead" type="string">The string of the value that will be read</param>
+    /// <param name="aStartingIndex" type="ref int">The index from which it will start reading the 
+    /// string, this will be updated after the function executes</param>
+    /// <param name="aStringToReadLength" type="int">The length (number of characters) of the string
+    /// that will be read</param>
+    /// <returns type="char[]">The continous chunk of number characters read from the string </returns>
+    /// <remarks>For explanation of how it works check: https://www.dotnetperls.com/alphanumeric-sorting
+    /// This function is used when sorting names alphanumerically, since it provides the continous chunk
+    /// of number characters that can then be used for sorting.
+    /// </remarks>
     private static char[] GetNumberCharsChunks(string aStringToRead, ref int aStartingIndex, int aStringToReadLength)
     {
-        //Get the current character of both names
-        char tempCharacter = aStringToRead[aStartingIndex];
+        //Get the starting character to read
+        char characterToRead = aStringToRead[aStartingIndex];
 
         // Create arrays of the values read
         char[] readValues = new char[aStringToReadLength];
@@ -32,8 +40,8 @@ Extra Notes: Based on: https://www.dotnetperls.com/alphanumeric-sorting
         //So it will read the string by chunks, determining if the char read is a number or not
         do
         {
-            //Read the starting value
-            readValues[indexReadValues] = tempCharacter;
+            //Read the current character value
+            readValues[indexReadValues] = characterToRead;
 
             //Increase the index
             indexReadValues++;
@@ -43,24 +51,29 @@ Extra Notes: Based on: https://www.dotnetperls.com/alphanumeric-sorting
             if (aStartingIndex < aStringToReadLength)
             {
                 //Read the next value
-                tempCharacter = aStringToRead[aStartingIndex];
+                characterToRead = aStringToRead[aStartingIndex];
             }
-            else//If the index is not valid
+            //If the index is not valid
+            else
             {
                 //Quit the loop
                 break;
             }
-        } while (char.IsNumber(tempCharacter) == char.IsNumber(readValues[0]));
+        } while (char.IsNumber(characterToRead) == char.IsNumber(readValues[0]));
 
         return readValues;
     }
 
-    /*
-    Description: A helper function to get all the children gameobjects from a parent game object.
-    Parameters: GameObject aParentObject - The gameobject that is the parent of the desired children objects.
-    Creator: Alvaro Chavez Mixco
-    Creation Date: Sunday, January 29, 2017
-    */
+    /// <summary>
+    /// A helper function to get all the children gameobjects from a parent game object.
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
+    /// <param name="aParentObject" type="GameObject">The parent game object from which the children 
+    /// game objects will be obtained</param>
+    /// <returns type="GameObject[]">All the children game objects found in the parent object</returns>
+    /// <remarks>This function is not recursive, it only returns the first line/hierarcht of 
+    /// children game objects</remarks>
     public static GameObject[] GetChildrenGameObjectFromParent(GameObject aParentObject)
     {
         //If the parent object is valid
@@ -83,54 +96,64 @@ Extra Notes: Based on: https://www.dotnetperls.com/alphanumeric-sorting
         return null;
     }
 
-    /*
-Description: Get the value between elements in each axis.
-Parameters: Vector3 aTotalValues - The total value of the object
-            Vector3 aTotalNumberOfElements - The number of object that will divide the total value.
-Creator: Alvaro Chavez Mixco
-Creation Date: Sunday, January 29, 20177
-*/
-    public static Vector3 GetValuesBetweenElements(Vector3 aTotalValues, Vector3 aTotalNumberOfElements)
+    /// <summary>
+    /// Divide all individual axis of a Vector3 by all the individual axis
+    /// of another Vector3 (dividing x with x, y with y, and z with z)
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
+    /// <param name="aDividend" type="Vector3">The Vector3 that will be divided</param>
+    /// <param name="aDivisor" type="Vector3">The Vector3 that will divide</param>
+    /// <returns type="Vector3">The vector3 that results from dividing each individual
+    /// axis of the vector3</returns>
+    public static Vector3 DivideVector3(Vector3 aDividend, Vector3 aDivisor)
     {
-        Vector3 valuesBetweenElements = Vector3.zero;
-
         //Get the value between each x,y and z element, according to the total value
         //and the total number of elements
-        valuesBetweenElements.x = aTotalValues.x / aTotalNumberOfElements.x;
-        valuesBetweenElements.y = aTotalValues.y / aTotalNumberOfElements.y;
-        valuesBetweenElements.z = aTotalValues.z / aTotalNumberOfElements.z;
-
-        return valuesBetweenElements;
+        return new Vector3(
+            aDividend.x / aDivisor.x,
+            aDividend.y / aDivisor.y,
+           aDividend.z / aDivisor.z);
     }
 
-    /*
-Description: Helper function to get the 3D (X,Y, Z) index of an object in a array according to its 1D intex
-             and the array size.
-Parameters: int a1DIndex - The total or 1D index being converted to 3D.
-            int aArrayWidth - The width, number fo columns, of the array
-            int aArrayHeight - The height of the array
-Creator: Alvaro Chavez Mixco
-Creation Date: Sunday, January 29, 2017
-*/
-    public static Vector3 Convert1DIndexTo3DArrayIndex(int a1DIndex, int aArrayWidth, int aArrayHeight)
+    /// <summary>
+    /// Helper function to get the 3D (X,Y, Z) index of an object in a array according to its 1D intex
+    /// and the array size.
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
+    /// <param name="a1DIndex" type="int">The 1D array index that will be converted</param>
+    /// <param name="aArrayWidth"type="int">The width, number of elements in X, of the array</param>
+    /// <param name="aArrayHeight" type="int">The width, number of elements in Y, of the array</param>
+    /// <returns type="Vector3Int">The 3D array index that equals
+    /// the 1D array index <paramref name="a1DIndex"/></returns>
+    public static Vector3Int Convert1DIndexTo3DArrayIndex(int a1DIndex, int aArrayWidth, int aArrayHeight)
     {
-        Vector3 index3D;
+        Vector3Int index3D = Vector3Int.zero;
+
+        //Get the Z index
         index3D.z = a1DIndex / (aArrayWidth * aArrayHeight);
-        a1DIndex -= ((int)index3D.z * aArrayWidth * aArrayHeight);
+
+        //Adjust the 1D index so that it only takes into account X and Y
+        a1DIndex -= index3D.z * aArrayWidth * aArrayHeight;
+
+        //Get the Y index
         index3D.y = a1DIndex / aArrayWidth;
+
+        //Get the X index
         index3D.x = a1DIndex % aArrayWidth;
 
         return index3D;
     }
 
-    /*
-Description: Convert a 1D array of game objects into a 3D array of game objects. The function will 
-             return the new 3D array of game objects.
-Parameters: GameObject[] aArrayGameObject - The 1D array of game objects to convert
-            Vector3 aArrayXYZDimensions - The dimensions for the 3D array
-Creator: Alvaro Chavez Mixco
-Creation Date: Sunday, January 29, 20177
-*/
+    /// <summary>
+    /// Convert a 1D array of game objects into a 3D array of game objects.
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
+    /// <param name="aArrayGameObject" type="GameObject[]">The 1D array of game objects to convert to a 3D array</param>
+    /// <param name="aArrayXYZDimensions" type="Vector3">The dimensions of the 3D array that will be created</param>
+    /// <returns type="GameObject[,,]">The new 3D array of game objects</returns>
     public static GameObject[,,] Convert1DArrayGameObjectsTo3DArray(GameObject[] aArrayGameObject, Vector3 aArrayXYZDimensions)
     {
         //Create the 3D array of game objects
@@ -155,21 +178,24 @@ Creation Date: Sunday, January 29, 20177
         return gameObjects3DArray;
     }
 
-
-    /*
-Description: Function intented to be assigned to a delegate. 
-             Function to compare 2 strings alhpanumerically according to their.
-    Parameters: string aTextA - The text to compare
-                string aTextB - The other text to compare
-Creator: Alvaro Chavez Mixco
-Creation Date:  Tuesday, February 14th, 2017
-Extra Notes: Based on: https://www.dotnetperls.com/alphanumeric-sorting
-             https://msdn.microsoft.com/en-us/library/tfakywbh(v=vs.110).aspx 
-             Value           Meaning          
-             Less than 0     x is less than y.
-             0               x equals y.  
-             Greater than 0  x is greater than y.                        
-*/
+    /// <summary>
+    /// Compares 2 strings alphanumerically, for sorting purposes
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Tuesday, February 14th, 2017</CreationDate>
+    /// <param name="aTextA" type="string">The text to compare alphanumerically</param>
+    /// <param name="aTextB" type="string">The other text to compare alphanumerically</param>
+    /// <returns type="int">The int result from the comparison, this can be:
+    /// Less than 0   : A is less than B
+    /// Equals 0      : A equals B
+    /// Greater than 0: A is greater than B
+    /// </returns>
+    /// <remarks>Function intented to be assigned to a delegate.
+    /// For explanation on how it works check:
+    /// https://www.dotnetperls.com/alphanumeric-sorting
+    /// https://msdn.microsoft.com/en-us/library/tfakywbh(v=vs.110).aspx
+    /// </remarks>
+    /// <seealso cref="SortByInverseAlphanumerically(string, string)"/>
     public static int SortByAlphanumerically(string aTextA, string aTextB)
     {
         //If both objects are valid
@@ -227,29 +253,44 @@ Extra Notes: Based on: https://www.dotnetperls.com/alphanumeric-sorting
         return 0;
     }
 
-    /*
-    Description: Function intented to be assigned to a delegate. 
-                 Function to compare 2 objects  inverse alhpanumerically according to their name. This is done
-                by calling the normal SortByAlphanumerically function, but switching the order of the parameters.
-    Parameters: string aTextA - The text to compare
-                string aTextB - The other text to compare
-    Creator: Alvaro Chavez Mixco
-    Creation Date:  Tuesday, February 14th, 2017
-    */
+    /// <summary>
+    /// Compares 2 strings inverse alhpanumerically. This is done by calling the normal 
+    /// SortByAlphanumerically function, but switching the order of the parameters.
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Tuesday, February 14th, 2017</CreationDate>
+    /// <param name="aTextA" type="string">The text to compare inverse alphanumerically</param>
+    /// <param name="aTextB" type="string">The other text to compare inverse alphanumerically</param>
+    /// <returns type="int">The int result from the comparison, this can be:
+    /// Less than 0   : A is less than B
+    /// Equals 0      : A equals B
+    /// Greater than 0: A is greater than B
+    /// </returns>
+    /// <remarks>Function intented to be assigned to a delegate.
+    /// </remarks>
+    /// <seealso cref="SortByAlphanumerically(string, string)"/>
     public static int SortByInverseAlphanumerically(string aTextA, string aTextB)
     {
         //Call the normal SortByAlphanumerically function, but switching the order of the parameters.
         return SortByAlphanumerically(aTextB, aTextA);
     }
 
-    /*
-Description: Function intented to be assigned to a delegate. 
-             Function to compare 2 gameobjects alhpanumerically according to their name.
-Parameters: GameObject aObjectA - A gameobject
-            GameObject aObjectB - The gameobject that will be compared to aObjectB
-Creator: Alvaro Chavez Mixco
-Creation Date:  Tuesday, March 20th, 2017                   
-*/
+    /// <summary>
+    /// Compares the name of 2 game objects alphanumerically, for sorting purposes
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Tuesday, February 14th, 2017</CreationDate>
+    /// <param name="aObjectA" type="GameObject">The game object which name will be compared alphanumerically</param>
+    /// <param name="aObjectB" type="GameObject">The other game object which name will be compared alphanumerically</param>
+    /// <returns type="int">The int result from the comparison, this can be:
+    /// Less than 0   : A is less than B
+    /// Equals 0      : A equals B
+    /// Greater than 0: A is greater than B
+    /// </returns>
+    /// <remarks>Function intented to be assigned to a delegate.
+    /// </remarks>
+    /// <seealso cref="SortByAlphanumerically(string, string)"/>
+    /// <seealso cref="SortByInverseAlphanumerically(GameObject, GameObject)"/>
     public static int SortByAlphanumerically(GameObject aObjectA, GameObject aObjectB)
     {
         //If both game objects are valid
@@ -263,15 +304,24 @@ Creation Date:  Tuesday, March 20th, 2017
         return 0;
     }
 
-    /*
-    Description: Function intented to be assigned to a delegate. This is done
-                    by calling the normal SortByAlphanumerically function, but switching the order of the parameters.
-                 Function to compare 2 gameobjects alhpanumerically according to their name.
-    Parameters: GameObject aObjectA - A gameobject
-                GameObject aObjectB - The gameobject that will be compared to aObjectB
-    Creator: Alvaro Chavez Mixco
-    Creation Date:  Tuesday, March 20th, 2017                   
-    */
+    /// <summary>
+    /// Compares the name of 2 game objects inverse alphanumerically, for sorting purposes.
+    /// This is done by calling the normal SortByAlphanumerically function, but switching 
+    /// the order of the parameters.
+    /// </summary>
+    /// <Creator>Alvaro Chavez Mixco</Creator>
+    /// <CreationDate>Tuesday, February 14th, 2017</CreationDate>
+    /// <param name="aObjectA" type="GameObject">The game object which name will be compared inverse alphanumerically</param>
+    /// <param name="aObjectB" type="GameObject">The other game object which name will be compared inverse alphanumerically</param>
+    /// <returns type="int">The int result from the comparison, this can be:
+    /// Less than 0   : A is less than B
+    /// Equals 0      : A equals B
+    /// Greater than 0: A is greater than B
+    /// </returns>
+    /// <remarks>Function intented to be assigned to a delegate.
+    /// </remarks>
+    /// <seealso cref="SortByInverseAlphanumerically(string, string)"/>
+    /// <seealso cref="SortByAlphanumerically(GameObject, GameObject)"/>
     public static int SortByInverseAlphanumerically(GameObject aObjectA, GameObject aObjectB)
     {
         return SortByAlphanumerically(aObjectB, aObjectA);

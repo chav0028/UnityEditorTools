@@ -1,7 +1,6 @@
 ﻿//If the program is in the Unity editor
 #if UNITY_EDITOR
 using UnityEngine;
-
 using UnityEditor;
 
 /// <summary>

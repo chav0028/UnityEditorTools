@@ -193,7 +193,7 @@ public class CRenderCubemapTool : EditorWindow
         {
             //Ensure the far clipping plane disntace is always at least
             //slightly bigger than the near clipping plane distance
-            m_cameraFarClippingPlane = m_cameraNearClippingPlane + M_MIN_VALUE_NEAR_CLIPPING_PLANE;
+            m_cameraFarClippingPlane = m_cameraNearClippingPlane + M_CAMERA_MIN_DISTANCE_NEAR_FAR_CLIPPING_PLANES;
         }
 
         //Display the allow HDR field

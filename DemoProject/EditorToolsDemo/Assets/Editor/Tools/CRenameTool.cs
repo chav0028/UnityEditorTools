@@ -1,17 +1,15 @@
 ﻿//If it running in the unity editor
 #if UNITY_EDITOR
 using UnityEngine;
-
 using UnityEditor;
 using System.Collections.Generic;
 using System;
-
 
 /// <summary>
 /// Tool to rename all the children gameobjects of a single parent game object.
 /// </summary>
 /// <Creator>Alvaro Chavez Mixco</Creator>
-/// <CreationDate>Sunday, January 29, 2017</CreationDate>
+/// <CreationDate>Sunday, January 29th, 2017</CreationDate>
 public class CRenameTool : EditorWindow
 {
     private const string M_LABEL_SELECT_OBJECTS = "Select objects to rename";
@@ -72,7 +70,7 @@ public class CRenameTool : EditorWindow
     /// Show the tab on the editor
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     [MenuItem("Tools/Rename")]
     private static void Init()
     {
@@ -88,7 +86,7 @@ public class CRenameTool : EditorWindow
     /// handles the interaction/functionality of the UI shown
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     private void OnGUI()
     {
         //Show toggle whether it should rename the object selection
@@ -159,7 +157,7 @@ public class CRenameTool : EditorWindow
     /// Display the editor fields corresponding to changing the name of objects
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     private void DisplayRenamingFields()
     {
         //Toggle should it change the base name
@@ -222,7 +220,7 @@ public class CRenameTool : EditorWindow
     /// Display the editor fields corresponding to ordering the objects alphanumerically
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     private void DisplayOrderingAlphanumerically()
     {
         //Add space
@@ -277,7 +275,6 @@ public class CRenameTool : EditorWindow
             //Reorder the objects
             ReorderObjects(aObjectsToRename, m_delegSorting);
         }
-
     }
 
     /// <summary>
@@ -285,7 +282,7 @@ public class CRenameTool : EditorWindow
     /// the prefixes and suffixes.This doesn't include the number.
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     /// <param name="aOriginalName" type="string">The original name, the name that the object being
     /// renamed curretly has </param>
     /// <param name="aBaseName" type="string">The base name of the object</param>
@@ -333,7 +330,7 @@ public class CRenameTool : EditorWindow
     /// the objects if necessary.
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     /// <param name="aArrayObjects" type ="GameObject[]">The array of  all the GameObjects that will be renamed</param>
     /// <param name="aBaseName" type="string">The base name of the object</param>
     /// <param name="aPrefix" type="string">The prefix that will be added before the name of the obejct</param>

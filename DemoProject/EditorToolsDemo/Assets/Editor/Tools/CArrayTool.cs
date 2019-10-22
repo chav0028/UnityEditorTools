@@ -1,14 +1,13 @@
 ﻿//If the program is in the Unity editor
 #if UNITY_EDITOR
 using UnityEngine;
-
 using UnityEditor;
 
 /// <summary>
 /// Unity Editor Tool to place objects in a 3D array. This works similar to 3DS Max array tool.
 /// </summary>
 /// <Creator>Alvaro Chavez Mixco</Creator>
-/// <CreationDate>Sunday, January 29, 2017</CreationDate>
+/// <CreationDate>Sunday, January 29th, 2017</CreationDate>
 public class CArrayTool : EditorWindow
 {
     private const string M_LABEL_COPY = "Copy Objects";
@@ -87,7 +86,7 @@ public class CArrayTool : EditorWindow
     /// Show the Array Tool tab on the edtior
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     [MenuItem("Tools/Array")]
     private static void Init()
     {
@@ -103,7 +102,7 @@ public class CArrayTool : EditorWindow
     /// for when the user press a button
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     private void OnGUI()
     {
         //If we want to copy objectts
@@ -207,7 +206,7 @@ public class CArrayTool : EditorWindow
     /// Display in the editor window the options to copy an object.
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     private void DisplayCopyElementFields()
     {
         //Add space in window
@@ -230,7 +229,7 @@ public class CArrayTool : EditorWindow
     /// Display in the editor window the options to place an object
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     private void DisplayPlaceElementsFields()
     {
         //Add space in window
@@ -302,7 +301,7 @@ public class CArrayTool : EditorWindow
     /// Display in the editor window the options to set the properties of an array.
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     private void DisplayArrayProperties()
     {
         //Add space in window
@@ -352,20 +351,20 @@ public class CArrayTool : EditorWindow
     /// according to the total values.
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     private void CalculateIncrementalProperties()
     {
         //If we are usign a total array
         if (m_isIncrementalArray == false)
         {
             //Get the distance between objects according to size of array
-            m_incrementalDistance = CUtilEditorTools.GetValuesBetweenElements(m_totalDistance, m_arrayDimensions);
+            m_incrementalDistance = CUtilEditorTools.DivideVector3(m_totalDistance, m_arrayDimensions);
 
             //Get the angle between objects according to size of array
-            m_incrementalAngle = CUtilEditorTools.GetValuesBetweenElements(m_totalAngle, m_arrayDimensions);
+            m_incrementalAngle = CUtilEditorTools.DivideVector3(m_totalAngle, m_arrayDimensions);
 
             //Get the scale between objects according to size of array
-            m_incrementalScale = CUtilEditorTools.GetValuesBetweenElements(m_totalScale, m_arrayDimensions);
+            m_incrementalScale = CUtilEditorTools.DivideVector3(m_totalScale, m_arrayDimensions);
         }
     }
 
@@ -373,7 +372,7 @@ public class CArrayTool : EditorWindow
     /// Clear the data from the tool's previous operation
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     private void ClearPreviousOperationData()
     {
         m_previousParentObject = null;
@@ -387,7 +386,7 @@ public class CArrayTool : EditorWindow
     /// the desired prefab.The function returns the created objects.
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     /// <param name="aInstantiationFunction" type="delegInstantiateObject">The function that will be used to instantiate the prefab</param>
     /// <param name="aPrefab" type="GameObject">The prefab that will be instantiated</param>
     /// <param name="aArrayDimensions" type="Vector3Int">The dimensions of the array in the x, y, and z axis</param>
@@ -440,7 +439,7 @@ public class CArrayTool : EditorWindow
     /// the desired prefab for that specific coordinate.The function returns the created objects.
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     /// <param name="aInstantiationFunction" type="delegInstantiateObject">The function that will be used to instantiate the prefab</param>
     /// <param name="aArrayOfObjects" type="GameObject[,,]">The array of prefabs/objects that will be used when sampling which objects to
     /// create in the 3D array</param>
@@ -510,7 +509,7 @@ public class CArrayTool : EditorWindow
     /// Instantiate a gameobject from a prefab, but conserving the connection to the prefab
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     /// <param name="aPrefab" type="GameObject">The gameobject prefab that will be created</param>
     /// <param name="aText" type="string">T Not used in this function</param>
     /// <returns type="GameObject">The created object, with the connection to the prefab</returns>
@@ -535,7 +534,7 @@ public class CArrayTool : EditorWindow
     /// Instantiate a gameobject from a prefab, as a clone, no connection to prefab kept.
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     /// <param name="aPrefab" type="GameObject">The gameobject prefab that will be created</param>
     /// <param name="aText" type="string">T Not used in this function</param>
     /// <returns type="GameObject">The object created normally, with no connection to prefab</returns>
@@ -561,7 +560,7 @@ public class CArrayTool : EditorWindow
     /// Instantiate an object field in the game object window
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     /// <param name="aGameObject" type="GameObject">The gameobject that will be set in the object field</param>
     /// <param name="aText" type="string">The 3D coords of the object</param>
     /// <returns type="GameObject">The object created normally, with no connection to prefab</returns>
@@ -582,7 +581,7 @@ public class CArrayTool : EditorWindow
     /// Copy the object selected in the tool on a 3D array of objects
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     /// <param name="aObjectToCopy" type="GameObject">The gameobject that will be copied</param>
     /// <param name="aCopyAsInstance" type="bool">Indicated whethere the object should be instantiated
     /// as a prefab, or a normal object</param>  
@@ -617,7 +616,7 @@ public class CArrayTool : EditorWindow
     /// in the 3D array.
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     /// <param name="aListOfGameObjects" type="ref GameObject[,,]">The list of gameobjects that will be transformed</param>
     /// <param name="aArrayDimensions" type="Vector3Int">The dimensions of the array in the x, y, and z axis</param>
     /// <param name="aIncrementalDistance" type="Vector3">The increment in distance x,y, z that each
@@ -696,7 +695,7 @@ public class CArrayTool : EditorWindow
     /// Instantiate a 3D array of objects, and then place, rotate and scale them.
     /// </summary>
     /// <Creator>Alvaro Chavez Mixco</Creator>
-    /// <CreationDate>Sunday, January 29, 2017</CreationDate>
+    /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
     /// <param name="aInstantiationFunction" type="delegInstantiateObject">The function used to instantiate the object</param>
     /// <param name="aPrefab" type="GameObject">The object prefab that will be created</param>
     /// <param name="aArrayDimensions" type="Vector3Int">The dimensions of the array in the x, y, and z axis</param>
