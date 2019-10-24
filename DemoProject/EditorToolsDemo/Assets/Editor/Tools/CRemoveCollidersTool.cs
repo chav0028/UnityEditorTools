@@ -10,6 +10,7 @@ using UnityEditor;
 /// <CreationDate>Friday, October 11th, 2019</CreationDate>
 public class CRemoveCollidersTool : EditorWindow
 {
+    #region Constants
     //Constants
     private const string M_LABEL_WARNING_SELECT_OBJECTS = "Please select object to remove colliders from";
 
@@ -19,6 +20,7 @@ public class CRemoveCollidersTool : EditorWindow
     private const string M_TOGGLE_REMOVE_IN_INACTIVE_OBJECT = "Remove in Inactive Objects";
 
     private const string M_BUTTON_REMOVE = "Remove Colliders";
+    #endregion
 
     //Settings
     private bool m_removeRecursively = true;
@@ -26,6 +28,7 @@ public class CRemoveCollidersTool : EditorWindow
     private bool m_removeTriggers = true;
     private bool m_removeInInactiveObjects = false;
 
+    #region UI
     /// <summary>
     /// Show editor tool label in Unity toolbar
     /// </summary>
@@ -34,7 +37,7 @@ public class CRemoveCollidersTool : EditorWindow
     [MenuItem("Tools/Remove Colliders")]
     private static void Init()
     {
-        //Create editor window
+        //Create a new editor window, or get an existing one
         CRemoveCollidersTool window = (CRemoveCollidersTool)EditorWindow.GetWindow(typeof(CRemoveCollidersTool));
 
         //Show editor window
@@ -112,7 +115,7 @@ public class CRemoveCollidersTool : EditorWindow
             EditorGUILayout.LabelField(M_LABEL_WARNING_SELECT_OBJECTS);
         }
     }
-
+    #endregion
 
     /// <summary>
     /// Remove all the colliders passed from their gameobjects, checking

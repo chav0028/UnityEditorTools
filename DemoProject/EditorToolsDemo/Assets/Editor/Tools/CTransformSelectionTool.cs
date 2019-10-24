@@ -10,6 +10,7 @@ using UnityEngine;
 /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
 public class CTransformSelectionTool : EditorWindow
 {
+    #region Constants
     //Constants
     private const string M_LABEL_WARNING_SELECT_OBJECTS = "Please select object to transform";
 
@@ -18,12 +19,14 @@ public class CTransformSelectionTool : EditorWindow
     private const string M_VECTOR3_ADD_SCALE = "Scale Change ";
 
     private const string M_BUTTON_SRT = "Affect Transform";
+    #endregion
 
     //Values to add
     private Vector3 m_scaleToAdd = Vector3.zero;
     private Vector3 m_rotationDegreesToAdd = Vector3.zero;
     private Vector3 m_positionToAdd = Vector3.zero;
 
+    #region UI
     /// <summary>
     /// Show the tool option in the Unity toolbar
     /// </summary>
@@ -32,7 +35,7 @@ public class CTransformSelectionTool : EditorWindow
     [MenuItem("Tools/Transform Selection")]
     private static void Init()
     {
-        //Create window
+        //Create a new editor window, or get an existing one
         CTransformSelectionTool window = (CTransformSelectionTool)EditorWindow.GetWindow(typeof(CTransformSelectionTool));
 
         //Show window
@@ -74,6 +77,7 @@ public class CTransformSelectionTool : EditorWindow
             EditorGUILayout.LabelField(M_LABEL_WARNING_SELECT_OBJECTS);
         }
     }
+    #endregion
 
     /// <summary>
     /// Scale, rotate, translate the game objects currently selected.

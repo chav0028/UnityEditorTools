@@ -12,6 +12,8 @@ using System;
 /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
 public class CRenameTool : EditorWindow
 {
+    #region Constants
+    //Constants
     private const string M_LABEL_SELECT_OBJECTS = "Select objects to rename";
 
     private const string M_TOGGLE_RENAME_SELECTION = "Rename Selection";
@@ -20,7 +22,7 @@ public class CRenameTool : EditorWindow
     private const string M_TOGGLE_USE_SUFFIX = "Use Suffix";
     private const string M_TOGGLE_NUMBER_OBJECTS = "Number Objects";
     private const string M_TOGGLE_SHOULD_REORDER_OBJECTS_ALPHANUMERICALLY = "Reorder Objects Alphanumerically";
-    private const string M_TOGGLE_REORDER_SORT_METHOD_ALPHANUMERICALLY = "Sort Alphanumerically (On) or inverse Alphanumerically (off)";
+    private const string M_TOGGLE_REORDER_SORT_METHOD_ALPHANUMERICALLY = "Sort Alphanumerically (On) or inverse Alphanumerically (Off)";
 
     private const string M_INT_BASE_NUMBER = "Base Number: ";
     private const string M_INT_STEP = "Step: ";
@@ -32,6 +34,7 @@ public class CRenameTool : EditorWindow
     private const string M_OBJECT_PARENT = "Parent Object: ";
 
     private const string M_BUTTON_RENAME = "Rename Objects";
+    #endregion
 
     //Strings that make the name
     private string m_baseName = string.Empty;
@@ -66,6 +69,7 @@ public class CRenameTool : EditorWindow
     private delegate int delegSorting(GameObject objectA, GameObject objectB);
     private delegSorting m_delegSorting;
 
+    #region UI
     /// <summary>
     /// Show the tab on the editor
     /// </summary>
@@ -74,7 +78,7 @@ public class CRenameTool : EditorWindow
     [MenuItem("Tools/Rename")]
     private static void Init()
     {
-        //Create the editor window
+        //Create a new editor window, or get an existing one
         CRenameTool window = (CRenameTool)EditorWindow.GetWindow(typeof(CRenameTool));
 
         //Show the editor window option in the Unity toolbar
@@ -253,6 +257,7 @@ public class CRenameTool : EditorWindow
         //Add space
         EditorGUILayout.Space();
     }
+    #endregion
 
     /// <summary>
     /// Function to rename and reorders the objects passed as parameter

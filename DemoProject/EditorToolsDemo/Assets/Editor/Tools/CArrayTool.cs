@@ -10,6 +10,7 @@ using UnityEditor;
 /// <CreationDate>Sunday, January 29th, 2017</CreationDate>
 public class CArrayTool : EditorWindow
 {
+    #region Constants
     private const string M_LABEL_COPY = "Copy Objects";
     private const string M_LABEL_PLACE = "Place Objects";
     private const string M_LABEL_ERROR_OBJECT_NOT_PREFAB = "The object you wish to copy is not a prefab.";
@@ -37,6 +38,7 @@ public class CArrayTool : EditorWindow
 
     private const string M_FOLDOUT_ELEMENTS_TO_PLACE = "Elements to Place: ";
     private const string M_FOLDOUT_ARRAY_PROPERTIES = "Array Properties: ";
+    #endregion
 
     //Used to optimize and not recalculate arrays each frame
     private Vector3 m_previousArrayDimensions = Vector3.zero;
@@ -82,6 +84,7 @@ public class CArrayTool : EditorWindow
     /// <returns type="GameObject">The object that was just created</returns>
     private delegate GameObject delegInstantiateObject(GameObject aObjectPrefab, string aText);
 
+    #region UI
     /// <summary>
     /// Show the Array Tool tab on the edtior
     /// </summary>
@@ -90,7 +93,7 @@ public class CArrayTool : EditorWindow
     [MenuItem("Tools/Array")]
     private static void Init()
     {
-        //Create an editor window
+        //Create a new editor window, or get an existing one
         CArrayTool window = (CArrayTool)EditorWindow.GetWindow(typeof(CArrayTool));
 
         //Show the window
@@ -345,6 +348,7 @@ public class CArrayTool : EditorWindow
         //Add space to window
         EditorGUILayout.Space();
     }
+    #endregion
 
     /// <summary>
     /// Calculate the incremental properties (distance, angle, scale) of the array 
