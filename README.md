@@ -1,2 +1,2 @@
 # UnityEditorTools
-Differente editor tools to use with UNITY
+Different editor tools to use with Unity.
