@@ -351,9 +351,12 @@ public class CRenameTool : EditorWindow
         bool aChangeBaseName, bool aUsePrefix, bool aUseSuffix,
         bool aNumberObjects, int aStartingNumber, int aNumberingStepAmount)
     {
-        //If the arraay is valid
+        //If the array is valid
         if (aArrayObjects != null)
         {
+            //Record the change of all objects
+            Undo.RecordObjects(aArrayObjects, "Rename objects");
+
             //If the objects will be numbered
             if (aNumberObjects == true)
             {

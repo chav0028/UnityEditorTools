@@ -34,3 +34,6 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+/DemoProject/EditorToolsDemo/.vsconfig
+/DemoProject/EditorToolsDemo/Logs
+/DemoProject/EditorToolsDemo/UserSettings

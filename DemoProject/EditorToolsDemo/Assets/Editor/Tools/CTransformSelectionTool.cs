@@ -2,6 +2,7 @@
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
+using System.Collections.Generic;
 
 /// <summary>
 /// Tool to modify the transform of all the objects selected by an specific amount
@@ -96,21 +97,35 @@ public class CTransformSelectionTool : EditorWindow
         //If the objects being changed are valid
         if (aObjectsToTransform != null)
         {
+
+            List<Transform> objectsTransforms = new List<Transform>();
+
             //Go through all the objects
             for (int i = 0; i < aObjectsToTransform.Length; i++)
             {
                 //If the object is valid
                 if (aObjectsToTransform[i] != null)
                 {
-                    //Add to scale
-                    aObjectsToTransform[i].transform.localScale += aScaleChange;
-
-                    //Add to rotation
-                    aObjectsToTransform[i].transform.localRotation *= Quaternion.Euler(aRotationChange.x, aRotationChange.y, aRotationChange.z);
-                    
-                    //Add to position
-                    aObjectsToTransform[i].transform.localPosition += aPositionChange;
+                    //Store the object transform
+                    objectsTransforms.Add(aObjectsToTransform[i].transform);
                 }
+
+            }
+
+            //Record change to objects transform so that they can be undone (must record transform, not gameobject)
+            Undo.RecordObjects(objectsTransforms.ToArray(), "Transform selected objects");
+
+            //Go through all the transforms
+            for (int j = 0; j < objectsTransforms.Count; j++)
+            {
+                //Add to scale
+                objectsTransforms[j].localScale += aScaleChange;
+
+                //Add to rotation
+                objectsTransforms[j].localRotation *= Quaternion.Euler(aRotationChange.x, aRotationChange.y, aRotationChange.z);
+
+                //Add to position
+                objectsTransforms[j].localPosition += aPositionChange;
             }
         }
     }
